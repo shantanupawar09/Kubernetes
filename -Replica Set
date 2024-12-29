@@ -1,0 +1,31 @@
+#rs1.yml
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+   name: myrc
+spec:
+  replicas: 3
+  selector:
+   matchLabels:
+      env: dev
+  template:
+       metadata:
+          labels:
+              env: dev
+       spec:
+            containers:
+                 - name: nginxcontaine
+                   image: nginx
+                   ports:
+                     - containerPort: 80
+
+
+
+#this type is used to view two pods with different lables:
+#- Create 3 files
+#1) rs1.yml : name: myrc and lable env=dev
+#2) rs2.yml : name: myrc1 and lable env=prod
+#3) rs3.yml : name: myrc2 and lable env=testing
+
+# To view two pods with different lables:  kubectl get pods --selector 'env in (dev,testing)'
