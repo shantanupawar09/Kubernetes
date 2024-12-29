@@ -1,0 +1,19 @@
+#service.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+    name: mynodeportservice
+spec:
+  type: NodePort
+  selector:
+       app: myapp
+  ports:
+   - protocol: TCP
+     port: 80
+     targetPort: 80
+     nodePort: 30001
+
+#to execute nodeport service we require two file
+# one pod file & second nodeport service file
+#add nodeport e.g 30001 in worker node
