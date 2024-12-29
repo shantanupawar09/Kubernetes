@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: mydeployment
+spec:
+  replicas: 3
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+         maxSurge: 2
+         maxUnavailable: 0
+  selector:
+   matchLabels:
+      env: dev
+  template:
+       metadata:
+          labels:
+              env: dev
+       spec:
+            containers:
+                 - name: nginxcontaine
+                   image: nginx
+                   ports:
+                     - containerPort: 80
+                   volumeMounts:
+                    - mountPath: "/usr/share/nginx/html"
+                      name: myvolume
+
+                 - name: anothernginx
+                   image: php
+                   ports:
+                     - containerPort: 90
+                   volumeMounts:
+                    -  mountPath: "/usr/share/nginx/html"
+                       name: myvolume
+            volumes:
+               -  name: myvolume
+                  emptyDir: {}
