@@ -1,0 +1,56 @@
+Create 3 yml files in directory : pv.yml , pvc.yml and pod.yml
+
+# pv.yml:
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+    name: mypv
+spec:
+   capacity:
+      storage: 1Gi
+   accessModes:
+       - ReadWriteOnce
+   persistentVolumeReclaimPolicy: Retain
+   hostPath:
+       path: /mydata
+
+# pvc.yml:
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: mypvc
+spec:
+   accessModes:
+       - ReadWriteOnce
+   resources:
+      requests:
+         storage: 1Gi
+
+# pod.yml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+    name: ngipod
+spec:
+   containers:
+    - name: mycontainer
+      image: nginx
+      volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: myvol
+   volumes:
+       - name: myvol
+         persistentVolumeClaim:
+            claimName: mypvc
+
+#- Create pods for this files:
+#  1. kubectl apply -f pv.yml
+#  2.kubectl apply -f pvc.yml
+#  3. kubectl apply -f pod.yml
+
+# To view list of PV: kubectl get pv
+# To view list of PVC: kubectl get pv
+# To view list of Pods: kubectl get pv
