@@ -1,0 +1,12 @@
+# Create namespace using .yml file:
+# customname.yml :
+
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: mynamespace
+
+# Create namepsace : using command
+kubectl create namespace mynamespace
+# To view pods in mynamespace:
+kubectl get pods -n mynamespace
