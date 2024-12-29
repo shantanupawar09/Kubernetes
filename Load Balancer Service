@@ -1,0 +1,22 @@
+#loadbalancer.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: loadwalaservice
+spec:
+  type: LoadBalancer
+  selector:
+      app: myapp
+  ports:
+   - protocol: TCP
+     port: 80
+     targetPort: 80
+
+
+
+#reuired two file- pod & loadbalancer.yml
+# create AWS loadbalancer:
+#          application loadbalancer:
+#          add nodeport pord(between 30000 to 32627)
+# add this pord no in workernode and load balancer
