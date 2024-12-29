@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+    name: daemonwala
+    labels:
+       app: promi
+spec:
+   selector:
+       matchLabels:
+        app: promi
+   template:
+     metadata:
+         labels:
+            app: promi
+     spec:
+       containers:
+         - name: daemonwala
+           image: influxdb
+           ports:
+             - containerPort: 80
+
+#this type is used ,when we create only one pod in each workernode
+#used for analysis,logs,monitoring
