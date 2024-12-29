@@ -1,0 +1,57 @@
+#For autoscalling we require: metric-server,any depolyment pod,HPA file
+#install metric server:  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+#1.nginx.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: mydeployment
+spec:
+  replicas: 1
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+         maxSurge: 2
+         maxUnavailable: 0
+  selector:
+   matchLabels:
+      env: dev
+  template:
+       metadata:
+          labels:
+              env: dev
+       spec:
+            containers:
+                 - name: nginxcontaine
+                   image: nginx
+                   ports:
+                     - containerPort: 80
+                   resources:
+                         requests:
+                           cpu: "100m"
+                         limits:
+                           cpu: "500m"
+
+#2.Hpa.yml
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+       name: nginxhpa
+spec:
+  scaleTargetRef:
+     apiVersion: apps/v1
+     kind: Deployment
+     name: mydeployment
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+  - type: Resource
+    resource:
+       name: cpu
+       target:
+         type: Utilization
+         averageUtilization: 20
+
+#3.kubectl run it mypod --image=busybox -- bin/sh -c "while true;do wget -q -O- http://nginxpod Ip;done"  -get traffic to nginx pod 
