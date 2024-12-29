@@ -1,0 +1,42 @@
+#create pv.yml
+#create statefulset.yml
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+   name: db
+spec:
+   replicas: 3
+   selector:
+       matchLabels:
+            app: mydb
+   serviceName: "dbservice"
+   template:
+     metadata:
+         labels:
+            app: mydb
+     spec:
+        containers:
+          - name: mydbcontainer
+            image: mysql
+            env:
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                   configMapKeyRef:
+                       name: mysql-config
+                       key: mysql-password
+            ports:
+              - containerPort: 3306
+   volumeClaimTemplates:
+         - metadata:
+             name: dbb
+           spec:
+             accessModes: ["ReadWriteMany"]
+             resources:
+                requests:
+                   storage: 1Gi
+                limits:
+                  storage: 1Gi
+
+#1. kubectl apply -f pv.yml
+#2. kubectl apply -f statefulset.yml
