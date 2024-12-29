@@ -1,0 +1,44 @@
+#- Install nfs-common: sudo apt-get install nfs-common    -if needed
+#- Create EFS in AWS and click on attach , copy the NFS client path
+#- Create a directory:
+#      mkdir efsdir
+# - Paste the copied command ~/efsdir
+#- Create a directory named test:
+#-sudo mkdir test
+#- Create yml file :
+#-nano nfs.yml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: mydeployment
+spec:
+  replicas: 3
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+         maxSurge: 2
+         maxUnavailable: 0
+  selector:
+   matchLabels:
+      env: dev
+  template:
+       metadata:
+          labels:
+              env: dev
+       spec:
+            containers:
+                 - name: nginxcontaine
+                   image: nginx
+                   ports:
+                     - containerPort: 80
+                   volumeMounts:
+                    - mountPath: "/usr/share/nginx/html"
+                      name: myvolume
+
+            volumes:
+               -  name: myvolume
+                  nfs:
+                     server: efs dns name
+                     path: /test
