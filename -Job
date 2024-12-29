@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+   name: hellojob
+spec:
+   template:
+      metadata:
+         labels:
+           app: hello
+      spec:
+        containers:
+          - name: hello
+            image: busybox
+            command: ["echo","hello,k8s"]
+        restartPolicy: Never
+   backoffLimit: 4
+
+
+#used for specific task
+#we create a pod manually,every time kubectl command apply
